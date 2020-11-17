@@ -1,0 +1,76 @@
+doctype html
+html(lang = 'en')
+  head
+    title Welcome
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/getJsonFromUrl.js')
+    script(src='/javascripts/varFromUrl.js')
+  body(onload='loadFunction()')
+    - var w = 120
+    - var h = 150
+    mixin buttonBlock(buttonCaption, url)
+      a.button(href= url, class= buttonCaption === buttonActive ? 'active' : '')
+        svg.svg
+          path.line(d='M'+-w/2+' '+-h/2+', L'+-w/2+' '+h/4+',0 '+(h/4+w/2)+','+w/2+' '+h/4+','+w/2+' '+-h/2+',0 '+-(h-w)/2+'Z')
+        span.buttonText= buttonCaption
+        
+    //-
+      .container
+        - var messages = getMessages()
+        if messages
+          each msg, type in messages
+            #flash.collapse.show(class=type)= msg
+  
+    .container.mainHeader
+      include ../public/images/KingOfTheHillLogo.svg
+      .buttonStrip
+        +buttonBlock('Tournaments','/').spacer
+        if user
+          .spacer
+          +buttonBlock('My tournaments','/tournament')
+        .spacer
+        +buttonBlock('Find match', '/findMatch')
+        if !user
+          .spacer
+          +buttonBlock('Register', '/users/register')
+          .spacer
+          +buttonBlock('Log in','/users/login')
+        else
+          .spacer
+          +buttonBlock('Profile','/users/auth/steam')
+          .spacer
+          +buttonBlock('Log out', '/users/logout')
+          
+    block content
+    
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://unpkg.com/popper.js/dist/umd/popper.min.js')
+    script(src='/javascripts/bootstrap.js')
+    script(src='/javascripts/script.js')
+    script(src='/javascripts/tournament.js')
+    script(src='/javascripts/player.js')
+    script(src='/javascripts/team.js')
+    script(src='/javascripts/addMatch.js')
+    
+    script(src='/javascripts/replay_action_map.js')
+    script(src='/javascripts/replay_character.js')
+    script(src='/javascripts/replay_equipment.js')
+    script(src='/javascripts/replay_game_state.js')
+    script(src='/javascripts/replay_infobox.js')
+    script(src='/javascripts/replay_item.js')
+    script(src='/javascripts/replay_location.js')
+    script(src='/javascripts/replay_match.js')
+    script(src='/javascripts/replay_matchinfo.js')
+    script(src='/javascripts/replay_sessionGroup.js')
+    script(src='/javascripts/replay_player.js')
+    script(src='/javascripts/replay_scoreboard.js')
+    script(src='/javascripts/replay_slider.js')
+    script(src='/javascripts/replay_telemetry_event.js')
+    script(src='/javascripts/replay_weapon.js')
+    
+    script.
+      $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({html:true});   
+      });

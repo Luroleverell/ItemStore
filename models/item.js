@@ -1,14 +1,10 @@
 var mongoose = require('mongoose');
-var Match = require('../public/javascripts/match.js');
 var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 var https = require('https');
-var zlib = require('zlib');
 var request= require('request');
 
 const http = require('http');
 const nconf = require('nconf');
-
-var User = require('../models/user');
 
 nconf.argv().env().file('keys.json');
 

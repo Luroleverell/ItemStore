@@ -1,0 +1,25 @@
+doctype html
+html(lang = 'en')
+  head
+    script(src='/javascripts/script.js')
+    script.
+      const whTooltips = {colorLinks: true, iconizeLinks: true, iconSize: 'medium', renameLinks: true};
+    script(src='https://wow.zamimg.com/widgets/power.js')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body(onload='loadFunction()')
+    .container
+      input(name="filter", id="filter", placeholder="[item name, slot, dropped from, zone]")
+      #items
+      
+    //-
+      if items
+        each item in items
+          .container
+            .row.bgMain
+              .col
+                a.q3.icontiny(href='https://classic.wowhead.com/item='+item.id, data-wowhead='domain=classic&item=21702', data-entity='item', data-entity-has-icon='true') #{item.name}
+              .col #{item.slot}
+              .col #{item.drop}
+    

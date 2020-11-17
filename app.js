@@ -10,7 +10,6 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var upload = multer({ dest: 'uploads/' })
 var flash = require('express-flash-messages');
-var bcrypt = require('bcryptjs');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
@@ -18,10 +17,7 @@ var db = mongoose.connection;
 var http = require('http');
 var nconf = require('nconf');
 
-var User = require('./models/user');
 var index = require('./routes/index');
-var users = require('./routes/users');
-var tournaments = require('./routes/tournaments');
 
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -96,8 +92,6 @@ app.get('*', function(req, res, next){
 });
 
 app.use('/', index);
-app.use('/users', users);
-app.use('/tournaments', tournaments);
 //app.use('/events', events);
 
 // catch 404 and forward to error handler
