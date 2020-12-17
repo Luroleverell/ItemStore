@@ -67,9 +67,11 @@ router.get('/discord', function(req, res, next){
         authorization: `${tokenType} ${accessToken}`
       }})
         .then(function(result){
+          console.log('--3--')
           return result.json();
         })
         .then(function(r){
+          console.log('--4--')
           let discordId = null;
           
           if(r.username){
@@ -77,7 +79,9 @@ router.get('/discord', function(req, res, next){
           }
           let user = new User({discordId: discordId})
           User.add(user, function(err, doc){
+            console.log('--5--')
             Character.getCharacters(doc, function(cErr, characters){
+              console.log('--6--')
               session.user = {user: doc, characters: characters, admin: false};
               res.location('/');
               res.redirect('/');
