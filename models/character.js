@@ -23,39 +23,33 @@ mongoose.connect(uri, { useNewUrlParser: true }).catch(function(err){
   if (err) throw err;
 });
 
-//mongoose.connect('mongodb://localhost/pubg');
-
 var db = mongoose.connection;
 
 //Tournament Schema
-var ItemSchema = mongoose.Schema({
-  id:{type: Number},
+var CharacterSchema = mongoose.Schema({
   name: {type:String},
-  drop: {type:String},
-  slot: {type:String}
+  class: {type:String},
+  server: {type:String},
+  discordId: {type:String}
 });
 
-var Item = module.exports = mongoose.model('Item', ItemSchema);
+var Character = module.exports = mongoose.model('Character', CharacterSchema);
 
-module.exports.add = function(item, callback){
-  item.save(callback);
+module.exports.add = function(character, callback){
+  Character.count({name: character.name}, function(err, count){
+    if(count == 0){
+      character.save(callback);
+    }else{
+      callback('Charactername is taken for this server','');
+    }
+  })
 }
 
-module.exports.getItems = function(filter, callback){
-  let f = filter;
-  if(filter=='null'){
-    f = '';
+module.exports.getCharacters = function(user, callback){
+  if(user){
+    Character.find({
+      discordId: user.discordId
+    }).exec(callback);
   }
-  Item.find({
-    $or:[
-      {name:{ $regex: f, $options: "i" }},
-      {slot:{ $regex: f, $options: "i" }},
-      {drop:{ $regex: f, $options: "i" }},
-      {zone:{ $regex: f, $options: "i" }}
-    ]
-  }).exec(callback);
 }
 
-module.exports.getAll = function(callback){
-  Item.find().exec(callback);
-}

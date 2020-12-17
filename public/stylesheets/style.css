@@ -1,14 +1,31 @@
 /*@import url('https://fonts.googleapis.com/css?family=exo');*/
 :root{
-  --color1: #28272d;
-  --color2: #4c4b50;
-  --mainColor: #166567;
-  --mainColorLight: #40c1ac;
+  --color1: #2c2c2c;
+  --color2: #3c3c3c;
+  --color3: #4c4c4c;
+  --mainColor: #662611;/*#4177A0;/*#116466;*/
+  --mainColorLight: #D9B08C;/*#D1E8E2;*/
+  --secondaryColor: #D9B08C;
+  --secondaryColorLight: #FFCB9A;
+  --linkColor: #4177A0;
+  --fontColor: #DDDDDD;
+  --buttonColor: #094750;
+  --buttonColorLight: #4192ab;
   /*--mainColor: #0c476a;
   --mainColorLight: #1f7da9;*/
-  --bg1: #a0a0a0;
+  --bg1:#a0a0a0;
   --tableBg: #d6d6d6;
-  --cell_opascity: 90%;
+  --cell_opascity: 10%;
+  
+  /*--color1: #28272d;
+  --color2: #4c4b50;
+  --mainColor: #166567;
+  --mainColorLight: #40c1ac;*/
+  /*--mainColor: #0c476a;
+  --mainColorLight: #1f7da9;*/
+  /*--bg1:#a0a0a0;
+  --tableBg: #d6d6d6;
+  --cell_opascity: 10%;*/
 }
 
 div.success {
@@ -51,21 +68,33 @@ body:not(#bodyNBG){
     linear-gradient(to right, #bcbcbc, #e4e4e4 20%, #e4e4e4 80%, #bcbcbc);
   background-size: 5px 5px, 5px 5px, 100% 100%;
   background-position: -1px -1px, -1px -1px, -1px -1px;*/
-  background-color: var(--bg1);
+  background-color: var(--color1);
   background-image:
-      linear-gradient(var(--color1) 1px, transparent 1px),
-      linear-gradient(90deg, var(--color1) 1px, transparent 1px),
-      linear-gradient(to right, var(--color1), var(--color2) 20%, var(--color2) 80%, var(--color1));
-  background-size: 10px 10px, 10px 10px, 100% 100%;
-  background-position: -1px -1px, -1px -1px, -1px -1px;
+      /*linear-gradient(var(--color2) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color2) 1px, transparent 1px),*/
+      linear-gradient(to right, var(--color1), var(--color2) 50%, var(--color1));
+  background-size: /*10px 10px, 10px 10px,*/ 100% 100%;
+  /*background-position: -1px -1px, -1px -1px, -1px -1px;*/
   overflow-y: scroll;
   margin-top: 50px;
+  font-family: 'Exo 2', sans-serif;
 }
 
 #searchResult{
   margin-top:20px;
 }
 
+.list > div:nth-of-type(odd){
+  background-color:var(--color3);
+}
+
+.err{
+  display:none;
+  background-color: var(--color3);
+  border: 2pt solid var( --mainColor);
+  padding-top: 15pt;
+  padding-bottom: 15pt;
+} 
 
 /*
 header sand - rgb(169,137,51)
@@ -235,7 +264,7 @@ break line - rgb(71,56,30)
   color: #fff;
   /*background-image: linear-gradient(to top right, #c4c4c4, #535150);*/
 }
- 
+
 .bgHeader{
   padding-top:20px;
   padding-bottom:15px;
@@ -268,12 +297,20 @@ break line - rgb(71,56,30)
   align-self:center;
 }
 
+.discord{
+  color:#7289DA;
+  cursor:pointer;
+}
+
 .bgMain{
-  background-color:#a0a0a0;
-  border:0px solid #535150;
-  border-top-width:0px;
-  border-bottom-width:0px;
-  padding-bottom:50px;
+  font-family:'Exo';
+  font-weight: thin;
+  color:var(--fontColor);
+  /*background-color:#a0a0a0;*/
+  border:2px solid var(--secondaryColor);
+  /*border-top-width:0px;
+  border-bottom-width:0px;*/
+  padding-bottom:5px;
   /*box-shadow:0px 0px 25px 5px #000;*/
   z-index:1; 
 }
@@ -364,6 +401,10 @@ break line - rgb(71,56,30)
   text-align: center;
 }
 
+.inputBtn{
+  padding-left:-50px;
+}
+
 .spacer{
   height: 80px;
 }
@@ -425,7 +466,9 @@ break line - rgb(71,56,30)
 }
 
 .tableBg{
-  background-color: var(--tableBg);
+  background-color: var(--secondaryColor);
+  color: var(--color1);
+  font-weight: bold;
 }
 
 .tableDiv{
@@ -437,6 +480,14 @@ break line - rgb(71,56,30)
   position: sticky;
   top: 0;
   z-index: 2;
+}
+
+.tableDivHeader{
+  cursor:pointer;
+}
+
+.row{
+  padding:5pt;
 }
 
 .trSelectable:hover{
@@ -898,17 +949,96 @@ input {
 /*-------------------*/
 
 /*--- Update bootstrap ---*/
-.btn-info{
-  color: var(--mainColorLight);
+.btn-button,
+.btn-button:active,
+.btn-button:focus,
+.btn-button.active {
+  color: var(--fontColor);
   background-color: var(--mainColor);
   border-color: var(--mainColor);
-  transition: transform 0.5s;
+  /*font-weight: bold;
+  letter-spacing: 0.05em;*/
+}
+
+.btn-button:hover{
+  color: var(--mainColor);
+  background-color: var(--mainColorLight);
+  border-color: var(--mainColor);
+}
+
+
+.btn-primary{
+  color: var(--fontColor);
+  background-color: var(--mainColor);
+  border-color: var(--mainColor);
+  /*transition: transform 0.5s;*/
+}
+
+.btn-primary:hover, .btn-primary.hover{
+  color: var(--mainColor);
+  background-color: var(--mainColorLight);
+  border-color: var(--mainColor);
+  /*transform: scale(1.1);*/
+}
+
+.btn-primary:focus{
+  box-shadow: 0 0 0 0rem rgba(23, 162, 184, 0.5);
+}
+
+/*
+.btn-primary {
+  &:hover,
+  &:focus,
+  &.focus {
+    color: var(--fontColor);
+    background-color: var(--mainColor);
+  }
+
+  &:active,
+  &.active,
+  &.disabled,
+  &:disabled {
+    color: var(--fontColor);
+    background-color: var(--mainColor);
+
+    &:focus,
+    &.focus {
+      color: var(--fontColor);
+      background-color: var(--mainColor);
+    }
+  }
+}
+*/
+
+.btn-secondary{
+  color: var(--color1);
+  background-color: var(--secondaryColor);
+  border-color: var(--secondaryColor);
+}
+
+.btn-secondary:hover{
+  background-color: var(--secondaryColorLight);
+  /*box-shadow: 0 0 0 1rem rgba(23, 162, 184, 0.5);*/
+}
+
+/*.btn-secondary{
+  color: #fff;
+  background-color: #c4c4c4;
+  /*background-image: linear-gradient(to top right, #c4c4c4, #535150);*/
+  /*border-color: #a76c52;
+}*/
+
+.btn-info{
+  color: var(--fontColor);
+  background-color: var(--buttonColor);
+  border-color: var(--buttonColor);
+  /*transition: transform 0.5s;*/
 }
 
 .btn-info:hover{
-  color: var(--mainColor);
-  background-color: var(--mainColorLight);
-  transform: scale(1.1);
+  color: var(--fontColor);
+  background-color: var(--buttonColorLight);
+  /*transform: scale(1.1);*/
 }
 
 .btn-info:focus{
@@ -916,41 +1046,15 @@ input {
 }
 
 
-.btn-primary{
-  color: #fff;
-  background-color: #f69e78;
-  background-image: linear-gradient(to top, #f69e78, #a76c52);
-  border-color: #a76c52;
-}
-
-.btn-primary:hover{
-  color: #fff;
-  background-color: #f69e78;
-  background-image: linear-gradient(to top, #a76c52, #f69e78);
-  border-color: #a76c52;
-  /*box-shadow: 0 0 0 1rem rgba(23, 162, 184, 0.5);*/
-}
-
-.btn-secondary{
-  color: #fff;
-  background-color: #c4c4c4;
-  /*background-image: linear-gradient(to top right, #c4c4c4, #535150);*/
-  border-color: #a76c52;
-}
-
-.btn-primary.focus {
-  box-shadow: 0 0 0 0rem rgba(23, 162, 184, 0.5);
-}
-
 .btn-danger {
   color: #fff;
   background-color: #c39b9f;
   /*background-image: linear-gradient(to top right, #ec838d, #8e5056);*/
   border-color: #8e5056;
-  transition: transform 0.5s;
+  /*transition: transform 0.5s;*/
 }
 .btn-danger:hover{
-  transform: scale(1.1);
+  /*transform: scale(1.1);*/
 }
 
 .btn-danger:focus, .btn-danger.focus {

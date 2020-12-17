@@ -1,25 +1,94 @@
 doctype html
 html(lang = 'en')
   head
-    script(src='/javascripts/script.js')
+    script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous")
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous")
     script.
       const whTooltips = {colorLinks: true, iconizeLinks: true, iconSize: 'medium', renameLinks: true};
     script(src='https://wow.zamimg.com/widgets/power.js')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href='https://fonts.googleapis.com/css?family=Exo', rel='stylesheet')
+    script(src='/javascripts/script.js')
   body(onload='loadFunction()')
-    .container
-      input(name="filter", id="filter", placeholder="[item name, slot, dropped from, zone]")
-      #items
-      
-    //-
-      if items
-        each item in items
+    if(!user)
+      .container.bgMain.rounded
+        .row.justify-content-center
+          a.btn.discord(href="/user")
+            | Log in with Discord
+            img(src='/images/Discord-Logo-Color.png' style='width:30pt; height:30pt')
+    else
+      .container.bgMain.rounded
+        .row.justify-content-center
+          .col.text-center Logged in as 
+            br
+            h2 #{user.user.discordId}
+            .col-auto
+              .btn-group
+                button.btn.btn-button(data-toggle='collapse', data-target='#char', data-role='expander', aria-expanded='false', aria-controls='char') Characters
+                //-button.btn.btn-button(data-toggle='collapse', data-target='#guild', data-role='expander', aria-expanded='false', aria-controls='guild') Guilds
+                a.btn.btn-button(href='/user/logout') Log out
+        #char.row.collapse
+          #charList.list
           .container
-            .row.bgMain
-              .col
-                a.q3.icontiny(href='https://classic.wowhead.com/item='+item.id, data-wowhead='domain=classic&item=21702', data-entity='item', data-entity-has-icon='true') #{item.name}
-              .col #{item.slot}
-              .col #{item.drop}
-    
+            .row
+              .col-4
+                span Character name
+                .input-group.mb-3
+                  input.form-control(name="character", id="character", placeholder="")
+                  .input-group-append
+                    button.btn.btn-outline-secondary(type='button', onclick="clearInput('character')", tabindex="-1") x
+              .col-4    
+                span Class
+                .input-group.mb-3
+                  select.form-control(name="characterClass", id="characterClass")
+                    option ..
+                    option Druid
+                    option Hunter
+                    option Mage
+                    option Paladin
+                    option Priest
+                    option Rogue
+                    option Shaman
+                    option Warlock
+                    option Warrior
+                  .input-group-append
+                    button.btn.btn-outline-secondary(type='button', onclick="clearInput('characterClass')", tabindex="-1") x
+              .col-4      
+                span Server
+                .input-group.mb-3
+                  select.form-control(name="server", id="server")
+                    option ..
+                    option Noggerfogger
+                  .input-group-append
+                    button.btn.btn-outline-secondary(type='button', onclick="clearInput('server')", tabindex="-1") x
+      br
+      .container.bgMain.rounded
+        #guild.row
+          #guildList
+    br
+    .container.bgMain.rounded
+      .container
+        .row
+        .row.justify-content-center
+          .col.text-center
+            h2 Ragnarok Item Store
+            h4 Noggenfogger
+      .container
+        .row
+          .col
+            .input-group.mb-3
+              input.form-control(name="filter", id="filter", placeholder="[filter by part of item name, slot, boss or zone. Use ; for multiple search criteries]")
+              .input-group-append
+                button.btn.btn-outline-secondary(type='button', onclick="clearInput('filter')", tabindex="-1") x
+      .container.tableBg#itemHeader.rounded-top
+        .row.tableDivHeader
+          .col-5(onclick='sortDiv("items",0)') Name
+          .col(onclick='sortDiv("items",1)') Slot
+          .col(onclick='sortDiv("items",2)') Dropped from
+          .col(onclick='sortDiv("items",3)') Zone
+          .col-2(onclick='sortDiv("items",4)') Price 
+      #items.list
+      #bids.container

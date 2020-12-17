@@ -18,6 +18,7 @@ var http = require('http');
 var nconf = require('nconf');
 
 var index = require('./routes/index');
+var user = require('./routes/user');
 
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -28,14 +29,14 @@ var sessionStore = new session.MemoryStore;
 nconf.argv().env().file('keys.json');
 //nconf.argv().env().file('custom','PUBG leaderboard-6d7d0557edcd.json');
 
-const user = nconf.get('mongoUser');
+const userDB = nconf.get('mongoUser');
 const pass = nconf.get('mongoPass');
 const host = nconf.get('mongoHost');
 const port = nconf.get('mongoPort');
 const dbname = nconf.get('mongoDbname');
 
 //let uri = 'mongodb://'+user+':'+pass+'@'+host+':'+port+'/'+dbname;
-let uri = 'mongodb+srv://'+user+':'+pass+'@'+host+'/'+dbname+'?retryWrites=true&w=majority';
+let uri = 'mongodb+srv://'+userDB+':'+pass+'@'+host+'/'+dbname+'?retryWrites=true&w=majority';
 //mongodb+srv://lirion:<password>@pubg.mbefo.mongodb.net/pubg?retryWrites=true&w=majority
 
 mongoose.connect(uri, { useNewUrlParser: true }).catch(function(err){
@@ -92,6 +93,7 @@ app.get('*', function(req, res, next){
 });
 
 app.use('/', index);
+app.use('/user', user);
 //app.use('/events', events);
 
 // catch 404 and forward to error handler
