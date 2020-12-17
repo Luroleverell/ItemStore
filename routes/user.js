@@ -31,7 +31,7 @@ var prompt = 'consent'
 var oauth = new DiscordOauth2({
   clientId: discordClientId,
   clientSecret: discordClientSecret,
-  redirectUri: 'https://item-store.herokuapp.com/user/discord'
+  redirectUri: 'http://localhost:3000/user/test'
 });
 
 router.get('/', passport.authenticate('discord'), function(req,res){
