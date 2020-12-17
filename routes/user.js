@@ -31,7 +31,7 @@ var prompt = 'consent'
 var oauth = new DiscordOauth2({
   clientId: discordClientId,
   clientSecret: discordClientSecret,
-  redirectUri: 'http://localhost:3000/user/test'
+  redirectUri: 'https://item-store.herokuapp.com/user/discord'
 });
 
 router.get('/', passport.authenticate('discord'), function(req,res){
@@ -49,7 +49,7 @@ router.get('/discord', function(req, res, next){
     'client_secret': discordClientSecret,
     'grant_type': 'authorization_code',
     'code': req.query.code,
-    'redirect_uri': 'http://localhost:3000/user/discord',
+    'redirect_uri': 'https://item-store.herokuapp.com/user/discord',
     'scope': 'identify'
   })
   fetch(url, { method: 'POST', body: data, headers:headers })
@@ -262,7 +262,7 @@ passport.deserializeUser(function(id, done) {
 passport.use(new DiscordStrategy({
   clientID: discordClientId,
   clientSecret: discordClientSecret,
-  callbackURL: 'http://localhost:3000/user/discord',
+  callbackURL: 'https://item-store.herokuapp.com/user/discord',
   scope: scopes,
   prompt: prompt
 }, function(accessToken, refreshToken, profile, done){
