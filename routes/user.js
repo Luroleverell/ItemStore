@@ -24,14 +24,14 @@ nconf.argv().env().file('keys.json');
 
 const discordClientId = nconf.get('discordClientId');
 const discordClientSecret = nconf.get('discordClientSecret');
-var steamKey = nconf.get('steamKey');
 var scopes = 'identify';
 var prompt = 'consent'
 
 var oauth = new DiscordOauth2({
   clientId: discordClientId,
   clientSecret: discordClientSecret,
-  redirectUri: 'http://localhost:3000/user/test'
+  //redirectUri: 'http://localhost:3000/user/discord'
+  //redirectUri: 'https://item-store.herokuapp.com/user/discord'
 });
 
 router.get('/', passport.authenticate('discord'), function(req,res){
@@ -39,7 +39,7 @@ router.get('/', passport.authenticate('discord'), function(req,res){
 })
 
 router.get('/discord', function(req, res, next){
-
+  console.log('--0--')
   let headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
@@ -50,13 +50,16 @@ router.get('/discord', function(req, res, next){
     'grant_type': 'authorization_code',
     'code': req.query.code,
     'redirect_uri': 'https://item-store.herokuapp.com/user/discord',
+    //'redirect_uri': 'http://localhost:3000/user/discord',
     'scope': 'identify'
   })
   fetch(url, { method: 'POST', body: data, headers:headers })
     .then(function(response){
+      console.log('--1--')
       return response.json();
     })
     .then(function(json){
+      console.log('--2--')
       let tokenType = json.token_type;
       let accessToken = json.access_token;
       
@@ -147,7 +150,7 @@ router.get('/addCharacter/:character/:characterClass/:server', function(req, res
 });
 
 router.get('/getCharacters/', function(req, res, next){
-  if(session.user.user){
+  if(session.user){
     Character.getCharacters(session.user.user, function(err, charList){
       res.json(charList);
     })
@@ -263,10 +266,12 @@ passport.use(new DiscordStrategy({
   clientID: discordClientId,
   clientSecret: discordClientSecret,
   callbackURL: 'https://item-store.herokuapp.com/user/discord',
+  //callbackURL: 'http://localhost:3000/user/discord',
   scope: scopes,
   prompt: prompt
 }, function(accessToken, refreshToken, profile, done){
-    return done(err, profile);
+    /*console.log('--initial call--')
+    return done(err, profile);*/
 }));
 
 function findUserByUsername(username){
