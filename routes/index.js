@@ -13,7 +13,7 @@ var fetch = require('node-fetch');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  let user = session.user;
+  let user = req.session.user;
   res.render('item', {user:user});
 });
 
@@ -22,9 +22,9 @@ router.get('/item', function(req, res){
 });
 
 router.get('/items', function(req, res){
-  let loggedIn = (session.user ? true : false);
+  let loggedIn = (req.session.user ? true : false);
   GuildPrice.getItems(function(err, itemList){
-    res.json({itemList: itemList, user: session.user});
+    res.json({itemList: itemList, user: req.session.user});
   });
 });
 

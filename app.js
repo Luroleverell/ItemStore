@@ -24,7 +24,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 var app = express();
-var sessionStore = new session.MemoryStore;
+//var sessionStore = new session.MemoryStore;
 
 nconf.argv().env().file('keys.json');
 //nconf.argv().env().file('custom','PUBG leaderboard-6d7d0557edcd.json');
@@ -65,9 +65,9 @@ app.use(express.static('public'))
 
 app.use(cookieParser('secret'));
 app.use(session({
-  secret: 'that secret',
-  saveUninitialized: false,
-  resave: false,
+  secret: 'that secret2',
+  saveUninitialized: true,
+  resave: true,
   store: new MongoStore({mongooseConnection: mongoose.connection}),
   unset: 'destroy'
   /*,

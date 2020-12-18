@@ -39,7 +39,7 @@ router.get('/', passport.authenticate('discord'), function(req,res){
 })
 
 router.get('/discord', function(req, res, next){
-  console.log('--0--')
+  
   let headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
@@ -49,17 +49,15 @@ router.get('/discord', function(req, res, next){
     'client_secret': discordClientSecret,
     'grant_type': 'authorization_code',
     'code': req.query.code,
-    'redirect_uri': 'https://item-store.herokuapp.com/user/discord',
-    //'redirect_uri': 'http://localhost:3000/user/discord',
+    //'redirect_uri': 'https://item-store.herokuapp.com/user/discord',
+    'redirect_uri': 'http://localhost:3000/user/discord',
     'scope': 'identify'
   })
   fetch(url, { method: 'POST', body: data, headers:headers })
     .then(function(response){
-      console.log('--1--')
       return response.json();
     })
     .then(function(json){
-      console.log('--2--')
       let tokenType = json.token_type;
       let accessToken = json.access_token;
       
@@ -67,11 +65,9 @@ router.get('/discord', function(req, res, next){
         authorization: `${tokenType} ${accessToken}`
       }})
         .then(function(result){
-          console.log('--3--')
           return result.json();
         })
         .then(function(r){
-          console.log('--4--')
           let discordId = null;
           
           if(r.username){
@@ -79,10 +75,8 @@ router.get('/discord', function(req, res, next){
           }
           let user = new User({discordId: discordId})
           User.add(user, function(err, doc){
-            console.log('--5--')
             Character.getCharacters(doc, function(cErr, characters){
-              console.log('--6--')
-              session.user = {user: doc, characters: characters, admin: false};
+              req.session.user = {user: doc, characters: characters, admin: false};
               res.location('/');
               res.redirect('/');
             });
@@ -104,7 +98,7 @@ router.post('/login',
 
 router.get('/logout', function(req, res) {
   req.logout();
-  session.user = null;
+  req.session.user = null;
   res.redirect('/');
 });
 
@@ -132,12 +126,12 @@ router.get('/add/:discordId', function(req, res, next){
 
 router.get('/addCharacter/:character/:characterClass/:server', function(req, res, next){
 
-  if(session.user){
+  if(req.session.user){
     let newCharacter = new Character({
       name: req.params.character,
       class: req.params.characterClass,
       server: req.params.server,
-      discordId: session.user.user.discordId
+      discordId: req.session.user.user.discordId
     })
     
     Character.add(newCharacter, function(err, charList){
@@ -154,8 +148,8 @@ router.get('/addCharacter/:character/:characterClass/:server', function(req, res
 });
 
 router.get('/getCharacters/', function(req, res, next){
-  if(session.user){
-    Character.getCharacters(session.user.user, function(err, charList){
+  if(req.session.user){
+    Character.getCharacters(req.session.user.user, function(err, charList){
       res.json(charList);
     })
   }else{
@@ -167,7 +161,7 @@ router.get('/getCharacters/', function(req, res, next){
 router.get('/addGuild/:guildName/:server', function(req, res, next){
   let guildName = req.params.guildName;
   let server = req.params.server;
-  if(guildName && session.user.user && server){
+  if(guildName && req.session.user.user && server){
     let newGuild = new Guild({
       guildName: guildName,
       server: server
@@ -176,7 +170,7 @@ router.get('/addGuild/:guildName/:server', function(req, res, next){
       if(err){
         next()
       }else{
-        Guild.addAdmin(guild._id, session.user.user._id, function(err, doc){
+        Guild.addAdmin(guild._id, req.session.user.user._id, function(err, doc){
           Item.getAll(function(itemErr, allItems){
             let itemPriceList = [];
             allItems.forEach(function(item){
@@ -195,9 +189,9 @@ router.get('/addGuild/:guildName/:server', function(req, res, next){
 });
 
 router.get('/getGuildList', function(req, res, next){  
-  if(session.user){
-    Guild.getGuildByAdmin(session.user.user._id, function(err, doc){
-      session.user.admin = true;
+  if(req.session.user){
+    Guild.getGuildByAdmin(req.session.user.user._id, function(err, doc){
+      req.session.user.admin = true;
       res.json(doc);
     });
   }else{
@@ -220,11 +214,11 @@ router.get('/addPrice/:guildName/:server/:itemNr/:price', function(req, res, nex
 
 router.get('/updatePrice/:guildId/:itemId/:price', function(req, res, next){
   let guildId = req.params.guildId;
-  if(session.user.user){
+  if(req.session.user.user){
     console.log('gid:' +guildId)
     Guild.getById(guildId, function(err, guild){
       guild.admin.forEach(function(admin){
-        if(admin == session.user.user._id.toString()) {
+        if(admin == req.session.user.user._id.toString()) {
           GuildPrice.update(
             guildId,  
             req.params.itemId, 
@@ -269,8 +263,8 @@ passport.deserializeUser(function(id, done) {
 passport.use(new DiscordStrategy({
   clientID: discordClientId,
   clientSecret: discordClientSecret,
-  callbackURL: 'https://item-store.herokuapp.com/user/discord',
-  //callbackURL: 'http://localhost:3000/user/discord',
+  //callbackURL: 'https://item-store.herokuapp.com/user/discord',
+  callbackURL: 'http://localhost:3000/user/discord',
   scope: scopes,
   prompt: prompt
 }, function(accessToken, refreshToken, profile, done){

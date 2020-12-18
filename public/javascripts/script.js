@@ -151,12 +151,15 @@ function printCharList(charList){
       
       cell = ce('div', 'col-auto');
       let btnGroup = ce('div', 'btn-group');
-      let btn = ce('button', ['btn', 'btn-button'])
+      /*let btn = ce('button', ['btn', 'btn-button'])
       btn.innerText = 'Edit';
-      btnGroup.appendChild(btn);
+      btnGroup.appendChild(btn);*/
       
       btn = ce('button', ['btn', 'btn-button'])
       btn.innerText = 'x';
+      btn.addEventListener('click', function(e){
+        url = '/user/deleteCharacter/'+c.name;
+      })
       btnGroup.appendChild(btn);
       
       cell.appendChild(btnGroup);
@@ -275,6 +278,7 @@ function printItemList(itemList){
   let itemHeader = document.getElementById('itemHeader');
   let bids = document.getElementById('bids');
   let editGuild = document.getElementById('editGuild');
+ 
   
   if(res){
     res.innerHTML='';
@@ -423,7 +427,6 @@ function printItemList(itemList){
             pbidContainer.appendChild(errRow);
             
             bids.appendChild(pbidContainer);
-            console.log(bids);
           });
           cell.appendChild(button);
         }
@@ -466,25 +469,28 @@ function updateBidList(parent, guildId, itemId){
     parent.appendChild(bidContainer);   
     
     bidContainer = ce('div', ['container','list'])
+
     bidList.forEach(function(bid, i){
-      bidRow = ce('div',['row','justify-content-center']);
-      bidCell = ce('div', 'col-2');
-      bidCell.innerText = i+1;
-      bidRow.appendChild(bidCell)
-      
-      bidCell = ce('div', 'col-2');
-      bidCell.innerText = bid.characterId.name;
-      bidRow.appendChild(bidCell);
-      
-      bidCell = ce('div', 'col-4');
-      bidCell.innerText = showDateTime(bid.date);
-      bidRow.appendChild(bidCell)
-      
-      bidCell = ce('div', 'col-2');
-      bidCell.innerText = bid.bid;
-      bidRow.appendChild(bidCell);
-      
-      bidContainer.appendChild(bidRow);
+      if(bid.characterId){
+        bidRow = ce('div',['row','justify-content-center']);
+        bidCell = ce('div', 'col-2');
+        bidCell.innerText = i+1;
+        bidRow.appendChild(bidCell)
+        
+        bidCell = ce('div', 'col-2');
+        bidCell.innerText = bid.characterId.name;
+        bidRow.appendChild(bidCell);
+        
+        bidCell = ce('div', 'col-4');
+        bidCell.innerText = showDateTime(bid.date);
+        bidRow.appendChild(bidCell)
+        
+        bidCell = ce('div', 'col-2');
+        bidCell.innerText = bid.bid;
+        bidRow.appendChild(bidCell);
+        
+        bidContainer.appendChild(bidRow);
+      }
     });
     
     parent.appendChild(bidContainer);
