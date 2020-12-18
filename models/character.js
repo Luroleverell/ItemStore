@@ -53,3 +53,7 @@ module.exports.getCharacters = function(user, callback){
   }
 }
 
+module.exports.delete = function(id, callback){
+  Character.deleteOne({_id:id}).exec(callback);
+}
+

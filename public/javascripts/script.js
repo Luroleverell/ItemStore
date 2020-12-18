@@ -6,7 +6,7 @@ var xmlns = "http://www.w3.org/2000/svg";
 var ligthVector = {x:0, y:1, z:1};
 var mainColor;
 var mainCOlorLight;
-var itemList;
+var itemlist;
 var filterActive;
 var edit = false;
 
@@ -112,15 +112,19 @@ function addCharacter(character, characterClass, server){
   let s = server.value;
   
   if(c && cc !='..' && cc !='' && s !='..' && s !=''){
-    let url = '/user/addCharacter/'+c+'/'+cc+'/'+s
+    let url = '/user/character/add/'+c+'/'+cc+'/'+s
     fetchData(url, function(){
+      character.value = '';
+      characterClass.value = '';
+      server.value = '';
+      
       updateCharacterList();
     });
   }
 }
 
 function updateCharacterList(){
-  let url = '/user/getCharacters/';
+  let url = '/user/character/get';
   fetchData(url, function(charList){
     if(!charList){
       charList = [];
@@ -137,7 +141,7 @@ function printCharList(charList){
     
     charList.forEach(function(c){
       let row = ce('div','row');
-      let cell = ce('div', 'col');
+      let cell = ce('div', ['col','divLink']);
       cell.innerText = c.name;
       row.appendChild(cell);
       
@@ -151,14 +155,23 @@ function printCharList(charList){
       
       cell = ce('div', 'col-auto');
       let btnGroup = ce('div', 'btn-group');
-      /*let btn = ce('button', ['btn', 'btn-button'])
-      btn.innerText = 'Edit';
-      btnGroup.appendChild(btn);*/
+      let btn = ce('button', ['btn', 'btn-button'])
+      btn.innerText = 'Filter bids';
+      btn.addEventListener('click', function(e){
+        let url = '/user/bid/get/'+c._id;
+        fetchData(url, function(doc){
+          getItemlistFromBids(doc);
+        });
+      });
+      btnGroup.appendChild(btn);
       
       btn = ce('button', ['btn', 'btn-button'])
       btn.innerText = 'x';
       btn.addEventListener('click', function(e){
-        url = '/user/deleteCharacter/'+c.name;
+        let url = '/user/character/delete/'+c.name+'/'+c.server;
+        fetchData(url, function(){
+          updateCharacterList();
+        });
       })
       btnGroup.appendChild(btn);
       
@@ -170,7 +183,7 @@ function printCharList(charList){
 }
 
 function updateGuildList(){
-  let url = '/user/getGuildList';
+  let url = '/user/guild/getByAdmin';
   fetchData(url, function(guildList){
     printGuildList(guildList);
   })
@@ -241,7 +254,7 @@ function printGuildList(guildList){
 function getItemlist(filter){
   let url = '/items/';
   fetchData(url, function(items){
-    itemList = items;
+    itemlist = items;
     updateItemlist(filter);
   });
 }
@@ -260,20 +273,35 @@ function filterItems(arr, query) {
 function updateItemlist(filter){
   if(!filter) filter = '';
   if(filter == ''){
-    printItemList(itemList);
+    printItemlist(itemlist);
   }else{
     let arrFilter = filter.split(';')
-    let newList = itemList.itemList;
+    let newList = itemlist.itemlist;
     arrFilter.forEach(function(filt){
       newList = filterItems(newList, filt);
     })
-    printItemList({user: itemList.user, itemList: newList});
+    printItemlist({user: itemlist.user, itemlist: newList});
   }
 }
 
-function printItemList(itemList){
-  let items = itemList.itemList;
-  let user = itemList.user;
+function getItemlistFromBids(bids){
+  let newList = [];
+  bids.forEach(function(bid){
+    let element = itemlist.itemlist.find(function(el){
+      return (el.itemId._id == bid.itemId._id);
+    });
+    if(element){
+      newList.push(element);
+    }
+  });
+  
+  printItemlist({user: itemlist.user, itemlist: newList});
+}
+
+
+function printItemlist(itemlist){
+  let items = itemlist.itemlist;
+  let user = itemlist.user;
   let res = document.getElementById('items');
   let itemHeader = document.getElementById('itemHeader');
   let bids = document.getElementById('bids');
@@ -325,7 +353,7 @@ function printItemList(itemList){
           input.value = i.price;
           input.style.textAlign = 'right';
           input.addEventListener('change', function(e){
-            let url = '/user/updatePrice/'+guild._id+'/'+item._id+'/'+e.target.value;
+            let url = '/user/guild/price/update/'+guild._id+'/'+item._id+'/'+e.target.value;
             fetchData(url, function(err, doc){});
           })
           cell.appendChild(input);
@@ -440,7 +468,7 @@ function printItemList(itemList){
 var accending = [false,false,false,false];
 
 function updateBidList(parent, guildId, itemId){
-  let url = '/user/bid/'+guildId+'/'+itemId;
+  let url = '/user/bid/get/'+guildId+'/'+itemId;
   fetchData(url, function(bidList){
     
     bidList.sort(function(a, b){
@@ -470,11 +498,15 @@ function updateBidList(parent, guildId, itemId){
     
     bidContainer = ce('div', ['container','list'])
 
+    let k = 0;
+    let l = 0;
+    
     bidList.forEach(function(bid, i){
+      l = i-k;
       if(bid.characterId){
         bidRow = ce('div',['row','justify-content-center']);
         bidCell = ce('div', 'col-2');
-        bidCell.innerText = i+1;
+        bidCell.innerText = l+1;
         bidRow.appendChild(bidCell)
         
         bidCell = ce('div', 'col-2');
@@ -490,6 +522,8 @@ function updateBidList(parent, guildId, itemId){
         bidRow.appendChild(bidCell);
         
         bidContainer.appendChild(bidRow);
+      }else{
+        k++;
       }
     });
     

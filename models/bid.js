@@ -79,3 +79,10 @@ module.exports.get = function(guildId, itemId, callback){
     .populate('characterId').exec(callback);
 }
 
+module.exports.getAll = function(characterId, callback){
+  Bid.find({characterId:characterId})
+    .populate('guildId')
+    .populate('itemId')
+    .populate('characterId').exec(callback);
+}
+

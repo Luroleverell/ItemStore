@@ -23,8 +23,8 @@ router.get('/item', function(req, res){
 
 router.get('/items', function(req, res){
   let loggedIn = (req.session.user ? true : false);
-  GuildPrice.getItems(function(err, itemList){
-    res.json({itemList: itemList, user: req.session.user});
+  GuildPrice.getItems(function(err, itemlist){
+    res.json({itemlist: itemlist, user: req.session.user});
   });
 });
 

@@ -124,7 +124,7 @@ router.get('/add/:discordId', function(req, res, next){
 })
 
 
-router.get('/addCharacter/:character/:characterClass/:server', function(req, res, next){
+router.get('/character/add/:character/:characterClass/:server', function(req, res, next){
 
   if(req.session.user){
     let newCharacter = new Character({
@@ -138,18 +138,36 @@ router.get('/addCharacter/:character/:characterClass/:server', function(req, res
       if(err){
         res.json(err);
       }else{
-        session.user.characters.push(charList);
+        req.session.user.characters.push(charList);
         res.send(charList);
       }
     })
   }else{
-    
+    res.json([])
   }
 });
 
-router.get('/getCharacters/', function(req, res, next){
+router.get('/character/delete/:character/:server', function(req, res, next){
+  if(req.session.user){
+    character = req.session.user.characters.filter(function(el){
+      console.log(el.name+' '+req.params.character+' '+el.server+' '+req.params.server)
+      return (el.name == req.params.character) && (el.server == req.params.server)
+    });
+    if(character.length>0){
+      Character.delete(character[0]._id, function(err, doc){
+        res.json(doc);
+      });
+    }else{
+      console.log('Fant ikke')
+    }
+  }else{
+  }
+});
+
+router.get('/character/get', function(req, res, next){
   if(req.session.user){
     Character.getCharacters(req.session.user.user, function(err, charList){
+      req.session.user.characters = charList;
       res.json(charList);
     })
   }else{
@@ -158,7 +176,7 @@ router.get('/getCharacters/', function(req, res, next){
 });
 
 
-router.get('/addGuild/:guildName/:server', function(req, res, next){
+router.get('/guild/add/:guildName/:server', function(req, res, next){
   let guildName = req.params.guildName;
   let server = req.params.server;
   if(guildName && req.session.user.user && server){
@@ -188,7 +206,7 @@ router.get('/addGuild/:guildName/:server', function(req, res, next){
   };
 });
 
-router.get('/getGuildList', function(req, res, next){  
+router.get('/guild/getByAdmin', function(req, res, next){  
   if(req.session.user){
     Guild.getGuildByAdmin(req.session.user.user._id, function(err, doc){
       req.session.user.admin = true;
@@ -199,8 +217,7 @@ router.get('/getGuildList', function(req, res, next){
   }
 });
 
-
-router.get('/addPrice/:guildName/:server/:itemNr/:price', function(req, res, next){
+router.get('/guild/price/add/:guildName/:server/:itemNr/:price', function(req, res, next){
   GuildPrice.add(
     req.params.guildName, 
     req.params.server, 
@@ -212,7 +229,7 @@ router.get('/addPrice/:guildName/:server/:itemNr/:price', function(req, res, nex
   )
 })
 
-router.get('/updatePrice/:guildId/:itemId/:price', function(req, res, next){
+router.get('/guild/price/update/:guildId/:itemId/:price', function(req, res, next){
   let guildId = req.params.guildId;
   if(req.session.user.user){
     console.log('gid:' +guildId)
@@ -236,7 +253,7 @@ router.get('/updatePrice/:guildId/:itemId/:price', function(req, res, next){
   }
 });
 
-router.get('/bid/:guildId/:itemId', function(req, res, next){
+router.get('/bid/get/:guildId/:itemId', function(req, res, next){
   Bid.get(req.params.guildId, req.params.itemId, function(err, bidList){
     res.json(bidList);
   });
@@ -246,8 +263,13 @@ router.get('/bid/add/:guildId/:itemId/:characterId/:bid', function(req, res, nex
   Bid.add(req.params.guildId, req.params.itemId, req.params.characterId, req.params.bid, function(err, doc){
     res.json(doc);
   });
-})
+});
 
+router.get('/bid/get/:characterId', function(req, res, next){
+  Bid.getAll(req.params.characterId, function(err, doc){
+    res.json(doc);
+  });
+});
 
 passport.serializeUser(function(user, done) {
   done(null, user);

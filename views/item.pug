@@ -38,6 +38,7 @@ html(lang = 'en')
                 span Character name
                 .input-group.mb-3
                   input.form-control(name="character", id="character", placeholder="")
+                //-
                   .input-group-append
                     button.btn.btn-outline-secondary(type='button', onclick="clearInput('character')", tabindex="-1") x
               .col-4    
@@ -54,6 +55,7 @@ html(lang = 'en')
                     option Shaman
                     option Warlock
                     option Warrior
+                //-
                   .input-group-append
                     button.btn.btn-outline-secondary(type='button', onclick="clearInput('characterClass')", tabindex="-1") x
               .col-4      
@@ -62,6 +64,7 @@ html(lang = 'en')
                   select.form-control(name="server", id="server")
                     option ..
                     option Noggerfogger
+                //-
                   .input-group-append
                     button.btn.btn-outline-secondary(type='button', onclick="clearInput('server')", tabindex="-1") x
       br
@@ -82,7 +85,7 @@ html(lang = 'en')
             .input-group.mb-3
               input.form-control(name="filter", id="filter", placeholder="[filter by part of item name, slot, boss or zone. Use ; for multiple search criteries]")
               .input-group-append
-                button.btn.btn-outline-secondary(type='button', onclick="clearInput('filter')", tabindex="-1") x
+                button.btn.btn-button(type='button', onclick="clearInput('filter')", tabindex="-1") Reset filter
       .container.tableBg#itemHeader.rounded-top
         .row.tableDivHeader
           .col-5(onclick='sortDiv("items",0)') Name
