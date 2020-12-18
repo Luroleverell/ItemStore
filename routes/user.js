@@ -75,6 +75,7 @@ router.get('/discord', function(req, res, next){
           }
           let user = new User({discordId: discordId})
           User.add(user, function(err, doc){
+            console.log(doc)
             Character.getCharacters(doc, function(cErr, characters){
               req.session.user = {user: doc, characters: characters, admin: false};
               res.location('/');

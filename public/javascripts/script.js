@@ -140,7 +140,7 @@ function printCharList(charList){
     res.classList.add('container');
     
     charList.forEach(function(c){
-      let row = ce('div','row');
+      let row = ce('div',['row','align-items-center']);
       let cell = ce('div', ['col','divLink']);
       cell.innerText = c.name;
       row.appendChild(cell);
