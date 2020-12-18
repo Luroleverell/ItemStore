@@ -239,17 +239,44 @@ function printGuildList(guildList){
       let btnAdmin = ce('button', ['btn', 'btn-button'])
       btnAdmin.innerText = 'Add admin';
       btnAdmin.addEventListener('click', function(e){
-
-      })
-      btnGrp.appendChild(btnAdmin)
+        cell.appendChild(addAdminPlate(guild.guildName));
+      });
+      btnGrp.appendChild(btnAdmin);
       
       cell.appendChild(btnGrp);
       row.appendChild(cell);
       
-      res.appendChild(row)
+      res.appendChild(row);
     });
   }
 }
+
+function addAdminPlate(guildName){
+  let container = ce('div', ['container']);
+  let row = ce('div','row');
+  let cell = ce('div', 'col');
+  let grp = ce('div', 'input-group');
+  let input = ce('input', 'form-control');
+  let append = ce('div', 'input-group-append');
+  let btn = ce('button', ['btn','btn-button']);
+  btn.innerText = 'Add';
+  btn.addEventListener('click', function(e){
+    let url = '/user/guild/admin/add/'+guildName+'/'+input.value;
+    fetchData(url, function(){
+      container.innerHTML = '';
+    });
+  });
+  append.appendChild(btn);
+  grp.appendChild(input);
+  grp.appendChild(append);
+  
+  cell.appendChild(grp);
+  row.appendChild(cell);
+  container.appendChild(row);
+  
+  return container;
+}
+
 
 function getItemlist(filter){
   let url = '/items/';

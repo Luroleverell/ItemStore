@@ -44,10 +44,8 @@ module.exports.getUserByUsername = function(username, callback){
 }
 
 module.exports.add = function(user, callback){
-  console.log(user.discordId)
-  User.count({discordId: user.discordId}, function(err, count){
-    console.log(count)
-    if(count == 0){
+  User.findOne({discordId: user.discordId}, function(err, doc){
+    if(!doc){
       user.save(callback);
     }
   }).exec(callback);

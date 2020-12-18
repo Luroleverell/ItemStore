@@ -49,8 +49,8 @@ router.get('/discord', function(req, res, next){
     'client_secret': discordClientSecret,
     'grant_type': 'authorization_code',
     'code': req.query.code,
-    'redirect_uri': 'https://item-store.herokuapp.com/user/discord',
-    //'redirect_uri': 'http://localhost:3000/user/discord',
+    //'redirect_uri': 'https://item-store.herokuapp.com/user/discord',
+    'redirect_uri': 'http://localhost:3000/user/discord',
     'scope': 'identify'
   })
   fetch(url, { method: 'POST', body: data, headers:headers })
@@ -75,7 +75,6 @@ router.get('/discord', function(req, res, next){
           }
           let user = new User({discordId: discordId})
           User.add(user, function(err, doc){
-            console.log(doc)
             Character.getCharacters(doc, function(cErr, characters){
               req.session.user = {user: doc, characters: characters, admin: false};
               res.location('/');
@@ -218,6 +217,26 @@ router.get('/guild/getByAdmin', function(req, res, next){
   }
 });
 
+router.get('/guild/admin/add/:guildName/:discordId', function(req, res, next){
+  if(req.session.user){
+    Guild.getGuildByAdmin(req.session.user.user._id, function(err, guilds){
+      guild = guilds.find(function(el){
+        return (el.guildName == req.params.guildName);
+      });
+      User.getByDiscordId(req.params.discordId, function(err, newAdmin){
+        if(newAdmin){
+          Guild.addAdmin(guild._id, newAdmin._id, function(err, doc){
+            res.json(doc);
+          })
+        }else{
+          res.json({error: 'No such user'});
+        }
+      })
+    });
+  }
+});
+
+
 router.get('/guild/price/add/:guildName/:server/:itemNr/:price', function(req, res, next){
   GuildPrice.add(
     req.params.guildName, 
@@ -286,8 +305,8 @@ passport.deserializeUser(function(id, done) {
 passport.use(new DiscordStrategy({
   clientID: discordClientId,
   clientSecret: discordClientSecret,
-  callbackURL: 'https://item-store.herokuapp.com/user/discord',
-  //callbackURL: 'http://localhost:3000/user/discord',
+  //callbackURL: 'https://item-store.herokuapp.com/user/discord',
+  callbackURL: 'http://localhost:3000/user/discord',
   scope: scopes,
   prompt: prompt
 }, function(accessToken, refreshToken, profile, done){
