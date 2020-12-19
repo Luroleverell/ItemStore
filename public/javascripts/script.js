@@ -111,6 +111,7 @@ function addCharacter(character, characterClass, server){
   let cc = characterClass.value;
   let s = server.value;
   
+  
   if(c && cc !='..' && cc !='' && s !='..' && s !=''){
     let url = '/user/character/add/'+c+'/'+cc+'/'+s
     fetchData(url, function(){
@@ -124,13 +125,27 @@ function addCharacter(character, characterClass, server){
 }
 
 function updateCharacterList(){
+  let dropdown = document.getElementById('characters');
   let url = '/user/character/get';
   fetchData(url, function(charList){
     if(!charList){
       charList = [];
     }
     printCharList(charList);
+    if(dropdown){
+      updateCharacterDropDown(dropdown, charList);
+    }
   });
+}
+
+function updateCharacterDropDown(parent, characters){
+  parent.innerHTML = '';
+  characters.forEach(function(character){
+    let pbidItem = ce('option')
+    pbidItem.value = character._id;
+    pbidItem.innerText = character.name;
+    parent.appendChild(pbidItem);
+  })
 }
 
 function printCharList(charList){
@@ -439,12 +454,7 @@ function printItemlist(itemlist){
             
             let pbidCharDD = ce('select','form-control');
             pbidCharDD.id = 'characters';
-            characters.forEach(function(character){
-              let pbidItem = ce('option')
-              pbidItem.value = character._id;
-              pbidItem.innerText = character.name;
-              pbidCharDD.appendChild(pbidItem);
-            })
+            updateCharacterDropDown(pbidCharDD, characters);
             pbidCell.appendChild(pbidCharDD);
             pbidRow.appendChild(pbidCell);
             
