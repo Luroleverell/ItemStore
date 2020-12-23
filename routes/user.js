@@ -27,8 +27,8 @@ const discordClientSecret = nconf.get('discordClientSecret');
 var scopes = 'identify';
 var prompt = 'consent'
 
-//var callbackURI = 'https://item-store.herokuapp.com/user/discord';
-var callbackURI = 'http://localhost:3000/user/discord';
+var callbackURI = 'https://item-store.herokuapp.com/user/discord';
+//var callbackURI = 'http://localhost:3000/user/discord';
 
 router.get('/', passport.authenticate('discord'), function(req,res){
   //res.json();

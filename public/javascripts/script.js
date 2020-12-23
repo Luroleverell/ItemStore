@@ -315,7 +315,6 @@ function filterItems(arr, query) {
 function updateItemlist(filter){
   if(!filter) filter = '';
   if(filter == ''){
-    console.log(itemlist);
     printItemlist(itemlist);
   }else{
     let arrFilter = filter.split(';')
