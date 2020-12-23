@@ -27,8 +27,8 @@ const discordClientSecret = nconf.get('discordClientSecret');
 var scopes = 'identify';
 var prompt = 'consent'
 
-var callbackURI = 'https://item-store.herokuapp.com/user/discord';
-//var callbackURI = 'http://localhost:3000/user/discord';
+//var callbackURI = 'https://item-store.herokuapp.com/user/discord';
+var callbackURI = 'http://localhost:3000/user/discord';
 
 router.get('/', passport.authenticate('discord'), function(req,res){
   //res.json();
@@ -247,24 +247,27 @@ router.get('/guild/price/add/:guildName/:server/:itemNr/:price', function(req, r
 router.get('/guild/price/update/:guildId/:itemId/:price', function(req, res, next){
   let guildId = req.params.guildId;
   if(req.session.user.user){
-    console.log('gid:' +guildId)
     Guild.getById(guildId, function(err, guild){
-      guild.admin.forEach(function(admin){
-        if(admin == req.session.user.user._id.toString()) {
-          GuildPrice.update(
-            guildId,  
+      if(guild){
+        let isAdmin = guild.admin.find(function(el){
+          return el == req.session.user.user._id;
+        });
+        if(isAdmin){
+          GuildPrice.update(guildId, 
             req.params.itemId, 
             req.params.price, 
             function(err, doc){
               res.json(doc);
-            }
-          )
+          });
+        }else{
+          res.json([]);
         }
-      });
+      }else{
+        res.json([]);
+      }
     });
   }else{
-    res.location('/');
-    res.redirect('/');
+    res.json([]);
   }
 });
 
